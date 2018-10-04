@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+    <info organisation="shane.nolan.wit" module="StupidJar" revision="1.0" status="release" publication="20150206160550"/>
+    <publications>
+    	<artifact name="StupidJar" ext="jar" type="jar"/>
+    </publications>
+</ivy-module>

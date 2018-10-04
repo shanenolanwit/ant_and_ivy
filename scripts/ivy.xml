@@ -1,6 +1,10 @@
-<ivy-module version="2.0">
-    <info organisation="shane.nolan.wit" module="HelloAnt"/>
+<!-- Always state publications before dependencies -->
+<ivy-module version="1.0">
+    <info organisation="shane.nolan.wit" module="BrokenComputer"/>    
     <publications>
-    	<artifact name="HelloAnt" ext="jar" type="jar"/>
-    </publications>
+    	<artifact name="BrokenComputer" ext="jar" type="jar"/>
+    </publications>    
+    <dependencies>
+        <dependency name="StupidJar" rev="1.0" />
+    </dependencies>   
 </ivy-module>

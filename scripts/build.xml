@@ -4,45 +4,71 @@
   <!-- set global properties for this build -->
   <property name="pub.version"  value="1.0"/>
   <property name="src.dir" location="../src/shane/nolan/wit"/>
-  <property name="build.dir" location="build"/>  
-  <property name="dist.dir" location="dist/lib/${pub.version}"/>
-	
-  <target name="help" description="Print Help" >
-  	<echo message="Use the dist command to build the distribution "/>
-  	<echo message="Use the publish command to push the distribution to the repository"/>
-  </target>
+  <property name="build.dir" location="build"/>
+  <property name="lib.dir" location="lib"/>
+  <property name="dist.dir"  location="dist/lib/${pub.version}"/>
+  
+	<target name="help" description="Print Help" >
+		<echo message="Use the get-dependencies command to grab the dependencies "/>
+	  	<echo message="Use the dist command to build the distribution "/>
+		<echo message="Use the publish command send the distribution to the ivy repository "/>
+	  </target>
 
   <target name="init" description="Initialise the build structure" >
-    <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${build.dir}"/>
+	<!-- Create the build directory structure used by compile -->
+	<mkdir dir="${build.dir}"/>
   </target>
 	
   <target name="clean" description="Clean up directory structure" >
-	 <!-- Delete the ${build} and ${dist} directory trees -->
-	 <delete dir="${build.dir}"/>
-	 <delete dir="${dist.dir}"/>
+	<delete dir="${build.dir}"/>
+	<delete dir="${dist.dir}"/>
+  	<delete dir="${lib.dir}"/>
   </target>
 
-  <target name="compile" depends="clean,init" description="Compile the source code" >
-    <!-- Compile the java code from ${src.dir} into ${build.dir} -->
-    <javac includeantruntime="false" srcdir="${src.dir}" destdir="${build.dir}"/>
-  </target> 
+  <target name="compile" depends="init" description="Compile the source " >
+    <!-- Compile the java code from ${src.dir} into ${build.dir} -->    
+  	<path id="master-classpath">
+  	  <fileset dir="${lib.dir}">
+  	    <include name="*.jar"/>
+  	  </fileset>
+  	</path>
+
+  	<javac includeantruntime="false" destdir="${build.dir}">
+  	  <src path="${src.dir}"/>
+  	  <classpath refid="master-classpath"/>
+  	</javac>
+  </target>
 
   <target name="dist" depends="compile" description="Generate the distribution" >
     <!-- Create the distribution directory -->
     <mkdir dir="${dist.dir}"/>
-    <!-- Put everything in ${build.dir} into the HelloAnt.jar file -->
-    <jar jarfile="${dist.dir}/HelloAnt.jar" basedir="${build.dir}"/>
-  </target> 
+
+    <jar jarfile="${dist.dir}/BrokenComputer.jar" basedir="${build.dir}">
+    	 <manifest>    		                
+    		 <attribute name="Main-Class" value="shane.nolan.wit.BrokenComputer"/>
+    	</manifest>
+    	<fileset dir="${build.dir}" includes="**/*.class" />
+    	<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+    </jar>
+  </target>
 	
 	<target name="resolve-and-retrieve" description="Resolve the ivy settings and retrieve dependencies">		
 		<ivy:resolve/>
 		<ivy:retrieve/>
 	</target>
-		
+				
 	<target name="publish" depends="resolve-and-retrieve" description="Publish this build into repository">
 		<ivy:publish pubrevision="${pub.version}" status="release" resolver="local">
 		    <artifacts pattern="${dist.dir}/[artifact].[ext]"/>
 		 </ivy:publish>
 	</target>
+	
+   <target name="get-dependencies" depends="clean" 
+            description="resolve and then retrieve dependencies defined in ivy.xml">
+        <mkdir dir="${lib.dir}"/>
+    	<ivy:resolve/>
+        <ivy:retrieve pattern="${lib.dir}/[artifact].[ext]"/>
+    </target> 
+	
+	
 </project>
