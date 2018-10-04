@@ -1,0 +1,10 @@
+<ivysettings>
+  <property name="repo.dir" value="ABSOLUTE_PATH_TO_REPO_DIR"/>
+  <settings defaultResolver="local"/>
+  <resolvers>
+  	<filesystem name="local">
+  		<ivy pattern="${repo.dir}/[orgPath]/[module]/[revision]/ivys/ivy.xml"/>
+  		<artifact pattern="${repo.dir}/[orgPath]/[module]/[revision]/[type]s/[artifact].[ext]"/>
+  	</filesystem>  	
+  </resolvers>
+</ivysettings>
